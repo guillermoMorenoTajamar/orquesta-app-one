@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { IInstrumento } from 'src/models/instrumento';
 import { IMusico } from 'src/models/musico';
 
-const URL = "http://orquesta-server.azurewebsites.net";
+const URL = "https://orquesta-server.azurewebsites.net";
 
 @Injectable({
   providedIn: 'root'
