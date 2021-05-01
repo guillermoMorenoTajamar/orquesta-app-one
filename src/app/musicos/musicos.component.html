@@ -1,0 +1,95 @@
+<h1 class="text-center">GESTION DE CONCIENTOS</h1>
+
+<hr class="rounded">
+
+<div class="row m-3">
+  <div class="col-6 table-responsive">
+    <table class="table table-hover table-sm caption-top">
+      <caption>Musicos</caption>
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Sueldo</th>
+          <th>Tipo</th>
+          <th>Instrumento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let musico of musicos">
+          <th>{{musico.id}}</th>
+          <td>{{musico.nombre}}</td>
+          <td>{{musico.sueldo}}</td>
+          <td>{{musico.tipo}}</td>
+          <td>{{getInstrumentoNombre(musico)}}</td>
+        </tr>
+        <tr *ngIf="musicos.length == 0"> No hay musicos en la base de datos </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-6 table-responsive">
+    <table class="table table-hover table-sm caption-top">
+      <caption>Instrumentos</caption>
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Tipo</th>
+          <th>Reparacion</th>
+          <th>Libre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let instrumento of instrumentos">
+          <td>{{instrumento.id}}</td>
+          <td>{{instrumento.nombre}}</td>
+          <td>{{instrumento.precio}}</td>
+          <td>{{instrumento.tipo}}</td>
+          <td>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" [checked]="instrumento.reparacion" (click)="changeReparacion(instrumento.id)">
+            </div>
+          </td>
+          <td>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" [checked]="instrumento.libre" disabled>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="instrumentos.length == 0"> No hay instrumentos en la base de datos </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="m-3">
+  <table class="table table-hover caption-top">
+    <caption>Factura</caption>
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Instrumento</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mi of getFactura(); let i = index">
+        <td>{{i + 1}}</td>
+        <td>{{mi.musico.tipo}}</td>
+        <td>{{mi.musico.nombre}}</td>
+        <td>{{mi.musico.sueldo + mi.instrumento.precio}}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="text-end">Total:</td>
+        <td>{{getTotal()}}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
