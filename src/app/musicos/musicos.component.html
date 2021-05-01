@@ -1,9 +1,9 @@
-<h1 class="text-center">GESTION DE CONCIENTOS</h1>
+<h1 class="text-center">GESTION DE CONCIERTOS</h1>
 
 <hr class="rounded">
 
 <div class="row m-3">
-  <div class="col-6 table-responsive">
+  <div class="col-5 table-responsive">
     <table class="table table-hover table-sm caption-top">
       <caption>Musicos</caption>
       <thead class="table-dark">
@@ -20,7 +20,7 @@
           <th>{{musico.id}}</th>
           <td>{{musico.nombre}}</td>
           <td>{{musico.sueldo}}</td>
-          <td>{{musico.tipo}}</td>
+          <td><img src="{{geInstrumentoImage(musico.tipo)}}"></td>
           <td>{{getInstrumentoNombre(musico)}}</td>
         </tr>
         <tr *ngIf="musicos.length == 0"> No hay musicos en la base de datos </tr>
@@ -28,13 +28,14 @@
     </table>
   </div>
 
-  <div class="col-6 table-responsive">
+  <div class="col-7 table-responsive">
     <table class="table table-hover table-sm caption-top">
       <caption>Instrumentos</caption>
       <thead class="table-dark">
         <tr>
           <th>#</th>
           <th>Nombre</th>
+          <th>Marca</th>
           <th>Precio</th>
           <th>Tipo</th>
           <th>Reparacion</th>
@@ -45,8 +46,9 @@
         <tr *ngFor="let instrumento of instrumentos">
           <td>{{instrumento.id}}</td>
           <td>{{instrumento.nombre}}</td>
+          <td>{{instrumento.marca}}</td>
           <td>{{instrumento.precio}}</td>
-          <td>{{instrumento.tipo}}</td>
+          <td><img src="{{geInstrumentoImage(instrumento.tipo)}}"></td>
           <td>
             <div class="form-check form-switch">
               <input class="form-check-input" type="checkbox" [checked]="instrumento.reparacion" (click)="changeReparacion(instrumento.id)">

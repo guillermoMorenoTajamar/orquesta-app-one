@@ -55,6 +55,11 @@ export class MusicosComponent implements OnInit {
       : this.instrumentos.filter(i => i.id == musico.instrumentoId)[0].nombre;
   }
 
+  geInstrumentoImage(tipo_instrumento: string) {
+    let path = `/assets/img/${tipo_instrumento}.png`.toLowerCase();
+    return path;
+  }
+
   getFactura() : Array<MusicoInstrumento> {
     let factura: MusicoInstrumento[] = Array<MusicoInstrumento>();
 
