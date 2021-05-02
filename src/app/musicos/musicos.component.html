@@ -1,7 +1,5 @@
 <h1 class="text-center">GESTION DE CONCIERTOS</h1>
 
-<hr class="rounded">
-
 <div class="row m-3">
   <div class="col-5 table-responsive">
     <table class="table table-hover table-sm caption-top">
@@ -19,7 +17,7 @@
         <tr *ngFor="let musico of musicos">
           <th>{{musico.id}}</th>
           <td>{{musico.nombre}}</td>
-          <td>{{musico.sueldo}}</td>
+          <td>{{musico.sueldo}} €</td>
           <td><img src="{{geInstrumentoImage(musico.tipo)}}"></td>
           <td>{{getInstrumentoNombre(musico)}}</td>
         </tr>
@@ -44,10 +42,10 @@
       </thead>
       <tbody>
         <tr *ngFor="let instrumento of instrumentos">
-          <td>{{instrumento.id}}</td>
+          <th>{{instrumento.id}}</th>
           <td>{{instrumento.nombre}}</td>
           <td>{{instrumento.marca}}</td>
-          <td>{{instrumento.precio}}</td>
+          <td>{{instrumento.precio}} €</td>
           <td><img src="{{geInstrumentoImage(instrumento.tipo)}}"></td>
           <td>
             <div class="form-check form-switch">
@@ -79,18 +77,18 @@
     </thead>
     <tbody>
       <tr *ngFor="let mi of getFactura(); let i = index">
-        <td>{{i + 1}}</td>
+        <th>{{i + 1}}</th>
         <td>{{mi.musico.tipo}}</td>
         <td>{{mi.musico.nombre}}</td>
-        <td>{{mi.musico.sueldo + mi.instrumento.precio}}</td>
+        <td>{{mi.musico.sueldo + mi.instrumento.precio}}  €</td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <td></td>
         <td></td>
-        <td class="text-end">Total:</td>
-        <td>{{getTotal()}}</td>
+        <td class="text-end fw-bold">Total:</td>
+        <td>{{getTotal()}} €</td>
       </tr>
     </tfoot>
   </table>
