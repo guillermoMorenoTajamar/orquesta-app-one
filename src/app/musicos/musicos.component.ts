@@ -26,27 +26,44 @@ export class MusicosComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // Podria ser mas facil pero asi se hacen menos llamadas al servidor
   changeReparacion(id: number) {
     const instrumento = this.instrumentos.filter(i => i.id == id)[0];
     instrumento.reparacion = !instrumento.reparacion;
-    this.asignar();
+    instrumento.libre = !instrumento.reparacion;
+    this.rest.updateInstrumento(instrumento);
+
+
+    // Enviar instrumento a reparar.
+    if (instrumento.reparacion) {
+      this.desasignarInstrumento(instrumento);
+    }
+    // Recibir instrumento de reparar.
+    else {
+      // Algun musico sin instrumento?
+      const musico = this.musicos.filter(m => m.instrumentoId == null && m.tipo == instrumento.tipo)[0];
+      if (musico) {
+        this.asignarInstrumento(musico);
+      }
+    }
+
   }
 
-  asignar() {
-    this.musicos.forEach(m => m.instrumentoId = null);
-    this.instrumentos.forEach(i => i.libre = true);
+  desasignarInstrumento(instrumento: IInstrumento) {
+    const musico = this.musicos.filter(m => m.instrumentoId == instrumento.id)[0];
+    if (musico) {
+      musico.instrumentoId = null;
+      this.asignarInstrumento(musico);
+    }
+  }
 
-    this.musicos.forEach(m => {
-      let instrumento = this.instrumentos.filter(i => i.libre && !i.reparacion && i.tipo == m.tipo)[0];
-      if (instrumento) {
-        m.instrumentoId = instrumento.id;
-        instrumento.libre = false;
-      }
-      this.rest.updateMusico(m);
-    })
-
-    this.instrumentos.forEach(i => this.rest.updateInstrumento(i));
+  asignarInstrumento(musico: IMusico) {
+    const instrumento = this.instrumentos.filter(i => i.libre && !i.reparacion && i.tipo == musico.tipo)[0];
+    if (instrumento) {
+      instrumento.libre = false;
+      musico.instrumentoId = instrumento.id;
+      this.rest.updateInstrumento(instrumento);
+    }
+    this.rest.updateMusico(musico);
   }
 
   getInstrumentoNombre(musico: IMusico) {
@@ -60,30 +77,30 @@ export class MusicosComponent implements OnInit {
     return path;
   }
 
-  getFactura() : Array<MusicoInstrumento> {
+  getFactura(): Array<MusicoInstrumento> {
     let factura: MusicoInstrumento[] = Array<MusicoInstrumento>();
 
     this.musicos
-    .filter(m => m.instrumentoId != null)
-    .forEach(m => {
-      let ins = this.instrumentos.filter(i => i.id == m.instrumentoId)[0];
-      factura.push({
-        musico: m,
-        instrumento: ins
+      .filter(m => m.instrumentoId != null)
+      .forEach(m => {
+        let ins = this.instrumentos.filter(i => i.id == m.instrumentoId)[0];
+        factura.push({
+          musico: m,
+          instrumento: ins
+        })
       })
-    })
 
     return factura;
   }
 
   getTotal() {
     let mi = this.getFactura();
-    let total = mi.reduce(function(acc, obj) { return acc + obj.instrumento.precio + obj.musico.sueldo}, 0);
+    let total = mi.reduce(function (acc, obj) { return acc + obj.instrumento.precio + obj.musico.sueldo }, 0);
     return total;
   }
 }
 
 interface MusicoInstrumento {
-  musico:IMusico;
-  instrumento:IInstrumento;
+  musico: IMusico;
+  instrumento: IInstrumento;
 }
