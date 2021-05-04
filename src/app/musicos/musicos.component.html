@@ -1,95 +1,120 @@
-<h1 class="text-center">GESTION DE CONCIERTOS</h1>
+<div class="top-menu">
+  <h1 class="text-center">GESTION DE CONCIERTOS</h1>
 
-<div class="row m-3">
-  <div class="col-5 table-responsive">
-    <table class="table table-hover table-sm caption-top">
-      <caption>Musicos</caption>
-      <thead class="table-dark">
-        <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Sueldo</th>
-          <th>Tipo</th>
-          <th>Instrumento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let musico of musicos">
-          <th>{{musico.id}}</th>
-          <td>{{musico.nombre}}</td>
-          <td>{{musico.sueldo}} €</td>
-          <td><img src="{{geInstrumentoImage(musico.tipo)}}"></td>
-          <td>{{getInstrumentoNombre(musico)}}</td>
-        </tr>
-        <tr *ngIf="musicos.length == 0"> No hay musicos en la base de datos </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="col-7 table-responsive">
-    <table class="table table-hover table-sm caption-top">
-      <caption>Instrumentos</caption>
-      <thead class="table-dark">
-        <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Marca</th>
-          <th>Precio</th>
-          <th>Tipo</th>
-          <th>Reparacion</th>
-          <th>Libre</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let instrumento of instrumentos">
-          <th>{{instrumento.id}}</th>
-          <td>{{instrumento.nombre}}</td>
-          <td>{{instrumento.marca}}</td>
-          <td>{{instrumento.precio}} €</td>
-          <td><img src="{{geInstrumentoImage(instrumento.tipo)}}"></td>
-          <td>
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" [checked]="instrumento.reparacion" (click)="changeReparacion(instrumento.id)">
-            </div>
-          </td>
-          <td>
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" [checked]="instrumento.libre" disabled>
-            </div>
-          </td>
-        </tr>
-        <tr *ngIf="instrumentos.length == 0"> No hay instrumentos en la base de datos </tr>
-      </tbody>
-    </table>
-  </div>
+  <button mat-raised-button color="accent" [routerLink]="['/editar', 0]"> Crear Musico </button>
 </div>
 
-<div class="m-3">
-  <table class="table table-hover caption-top">
-    <caption>Factura</caption>
-    <thead class="table-dark">
-      <tr>
-        <th>#</th>
-        <th>Instrumento</th>
-        <th>Nombre</th>
-        <th>Precio</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let mi of getFactura(); let i = index">
-        <th>{{i + 1}}</th>
-        <td>{{mi.musico.tipo}}</td>
-        <td>{{mi.musico.nombre}}</td>
-        <td>{{mi.musico.sueldo + mi.instrumento.precio}}  €</td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td></td>
-        <td></td>
-        <td class="text-end fw-bold">Total:</td>
-        <td>{{getTotal()}} €</td>
-      </tr>
-    </tfoot>
+<div class="table-container">
+
+  <table mat-table [dataSource]="musicos" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Id </th>
+      <td mat-cell *matCellDef="let musico"> {{musico.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let musico"> {{musico.nombre}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="sueldo">
+      <th mat-header-cell *matHeaderCellDef> Sueldo </th>
+      <td mat-cell *matCellDef="let musico"> {{musico.sueldo}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tipo">
+      <th mat-header-cell *matHeaderCellDef> Tipo </th>
+      <td mat-cell *matCellDef="let musico"> {{musico.tipo}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="instrumentoId">
+      <th mat-header-cell *matHeaderCellDef> Instrumento asignado </th>
+      <td mat-cell *matCellDef="let musico"> {{getInstrumentoAsignado(musico.instrumentoId)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="editar">
+      <th mat-header-cell *matHeaderCellDef> Editar </th>
+      <td mat-cell *matCellDef="let musico">
+        <button mat-raised-button color="accent" [routerLink]="['/editar', musico.id]"> Editar </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="borrar">
+      <th mat-header-cell *matHeaderCellDef> Borrar </th>
+      <td mat-cell *matCellDef="let musico">
+        <button mat-raised-button color="primary" (click)="borrarMusico(musico.id)"> Borrar </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsMusico"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsMusico;"></tr>
+  </table>
+
+
+
+
+
+  <table mat-table [dataSource]="instrumentos" class="mat-elevation-z8">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Id </th>
+      <td mat-cell *matCellDef="let instrumento"> {{instrumento.id}} </td>
+    </ng-container>
+    <ng-container matColumnDef="marca">
+      <th mat-header-cell *matHeaderCellDef> marca </th>
+      <td mat-cell *matCellDef="let instrumento"> {{instrumento.marca}} </td>
+    </ng-container>
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> nombre </th>
+      <td mat-cell *matCellDef="let instrumento"> {{instrumento.nombre}} </td>
+    </ng-container>
+    <ng-container matColumnDef="precio">
+      <th mat-header-cell *matHeaderCellDef> precio </th>
+      <td mat-cell *matCellDef="let instrumento"> {{instrumento.precio}} </td>
+    </ng-container>
+    <ng-container matColumnDef="tipo">
+      <th mat-header-cell *matHeaderCellDef> tipo </th>
+      <td mat-cell *matCellDef="let instrumento"> {{instrumento.tipo}} </td>
+    </ng-container>
+    <ng-container matColumnDef="reparacion">
+      <th mat-header-cell *matHeaderCellDef> reparacion </th>
+      <td mat-cell *matCellDef="let instrumento">
+        <button mat-raised-button color="accent" (click)="changeReparacion(instrumento.id)">
+          {{instrumento.reparacion ? "Taller" : "Stock"}}
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="libre">
+      <th mat-header-cell *matHeaderCellDef> Estado </th>
+      <td mat-cell *matCellDef="let instrumento"> {{instrumento.libre ? "Libre" : instrumento.reparacion ? "En taller" :
+        "En uso"}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsInstrumento"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsInstrumento;"></tr>
+  </table>
+</div>
+
+<div class="table-container">
+  <table mat-table [dataSource]="getFactura()" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> nombre </th>
+      <td mat-cell *matCellDef="let mi"> {{mi.nombre}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="instrumento">
+      <th mat-header-cell *matHeaderCellDef> instrumento </th>
+      <td mat-cell *matCellDef="let mi"> {{mi.instrumento}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="precio">
+      <th mat-header-cell *matHeaderCellDef> precio </th>
+      <td mat-cell *matCellDef="let mi"> {{mi.precio}} € </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsFactura"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsFactura;"></tr>
   </table>
 </div>

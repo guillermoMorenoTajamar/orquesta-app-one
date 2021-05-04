@@ -1,0 +1,37 @@
+<form [formGroup]="musico_form" class="form" (ngSubmit)="submitForm()">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Id</mat-label>
+      <input matInput formControlName="id" readonly>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="fechaIngreso">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Tipo de instrumento</mat-label>
+      <input matInput formControlName="tipo" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Instrumento asignado</mat-label>
+      <input matInput formControlName="instrumentoId" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Sueldo</mat-label>
+      <input matInput formControlName="sueldo" required>
+    </mat-form-field>
+
+    <button mat-raised-button>Submit</button>
+  
+</form>

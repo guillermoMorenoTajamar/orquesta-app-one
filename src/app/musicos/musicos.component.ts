@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IInstrumento } from 'src/models/instrumento';
 import { IMusico } from 'src/models/musico';
 import { RestService } from '../rest.service';
@@ -13,7 +14,11 @@ export class MusicosComponent implements OnInit {
   musicos: IMusico[] = Array<IMusico>();
   instrumentos: IInstrumento[] = Array<IInstrumento>();
 
-  constructor(private rest: RestService) {
+  displayedColumnsMusico: string[] = ['id', 'nombre', 'sueldo', 'tipo', 'instrumentoId', 'editar', 'borrar'];
+  displayedColumnsInstrumento: string[] = ['id', 'marca', 'nombre', 'precio', 'tipo', 'reparacion', 'libre'];
+  displayedColumnsFactura: string[] = ['nombre', 'instrumento', 'precio'];
+
+  constructor(private rest: RestService, private route: ActivatedRoute,) {
     rest.getInstrumentos().subscribe(data => {
       this.instrumentos = data;
     })
@@ -24,6 +29,7 @@ export class MusicosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
 
   changeReparacion(id: number) {
@@ -66,10 +72,14 @@ export class MusicosComponent implements OnInit {
     this.rest.updateMusico(musico);
   }
 
+  getInstrumentoAsignado(instrumento_id: number) {
+    return this.instrumentos.find(i => i.id == instrumento_id)?.nombre ?? "Sin instrumento"
+  }
+
   getInstrumentoNombre(musico: IMusico) {
     return musico.instrumentoId == null
-      ? "Sin instrumento"
-      : this.instrumentos.filter(i => i.id == musico.instrumentoId)[0].nombre;
+      ? `/assets/img/sin_ins.png`
+      : `/assets/img/con_ins.png`;
   }
 
   geInstrumentoImage(tipo_instrumento: string) {
@@ -77,30 +87,46 @@ export class MusicosComponent implements OnInit {
     return path;
   }
 
-  getFactura(): Array<MusicoInstrumento> {
-    let factura: MusicoInstrumento[] = Array<MusicoInstrumento>();
+  getFactura(): Array<FacturaRow> {
+    let factura: FacturaRow[] = Array<FacturaRow>();
 
     this.musicos
       .filter(m => m.instrumentoId != null)
       .forEach(m => {
         let ins = this.instrumentos.filter(i => i.id == m.instrumentoId)[0];
-        factura.push({
-          musico: m,
-          instrumento: ins
-        })
+        if (ins) {
+          factura.push({
+            nombre: m.nombre,
+            instrumento: ins.tipo + " " + ins.marca,
+            precio: m.sueldo + ins.precio
+          })
+        }
       })
+
+    let total = factura.reduce(function (acc, obj) { return acc + obj.precio }, 0);
+
+    factura.push({
+      nombre: "",
+      instrumento: "Total",
+      precio: total
+    });
 
     return factura;
   }
 
   getTotal() {
     let mi = this.getFactura();
-    let total = mi.reduce(function (acc, obj) { return acc + obj.instrumento.precio + obj.musico.sueldo }, 0);
+    let total = mi.reduce(function (acc, obj) { return acc + obj.precio }, 0);
     return total;
+  }
+  borrarMusico(id: number) {
+    const musico = this.musicos.filter(m => m.id == id)[0];
+    this.rest.deleteMusico(musico);
   }
 }
 
-interface MusicoInstrumento {
-  musico: IMusico;
-  instrumento: IInstrumento;
+interface FacturaRow {
+  nombre: string;
+  instrumento: string;
+  precio: number;
 }

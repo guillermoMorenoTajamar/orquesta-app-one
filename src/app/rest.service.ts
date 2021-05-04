@@ -38,6 +38,22 @@ export class RestService {
     });
   }
 
+  deleteMusico(musico: IMusico) {
+    console.log("REST Call");
+    this.http.delete<IMusico>(URL + "/api/Musico/" + musico.id).subscribe({
+      next: data => { },
+      error: error => { console.error('There was an error!', error); }
+    });
+  }
+
+  createMusico(musico: IMusico) {
+    console.log("REST Call");
+    this.http.post<IMusico>(URL + "/api/Musico", musico, httpOptions).subscribe({
+      next: data => { },
+      error: error => { console.error('There was an error!', error); }
+    });
+  }
+
   getInstrumentos(): Observable<IInstrumento[]> {
     return this.http.get<IInstrumento[]>(URL + "/api/Instrumento", httpOptions);
   }
